@@ -32,6 +32,16 @@ Content-Type: application/json
 }
 
 ###
+POST http://localhost:8080/transaction/use
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "accountNumber": "1000000001",
+  "amount": 3000
+}
+
+###
 POST http://localhost:8080/transaction/cancel
 Content-Type: application/json
 
