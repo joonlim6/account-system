@@ -16,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -104,4 +106,36 @@ class AccountControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void successGetAccountsByUserId() throws Exception {
+        // given
+        List<AccountDto> accountDtos =
+                Arrays.asList(
+                        AccountDto.builder()
+                                .accountNumber("1000000001")
+                                .balance(100L)
+                                .build(),
+                        AccountDto.builder()
+                                .accountNumber("1000000002")
+                                .balance(200L)
+                                .build(),
+                        AccountDto.builder()
+                                .accountNumber("1000000003")
+                                .balance(300L)
+                                .build()
+                );
+        given(accountService.getAccountsByUserId(anyLong()))
+                .willReturn(accountDtos);
+
+        // when
+        // then
+        mockMvc.perform(get("/account?user_id=1"))
+                .andDo(print())
+                .andExpect(jsonPath("$[0].accountNumber").value("1000000001"))
+                .andExpect(jsonPath("$[0].balance").value(100L))
+                .andExpect(jsonPath("$[1].accountNumber").value("1000000002"))
+                .andExpect(jsonPath("$[1].balance").value(200L))
+                .andExpect(jsonPath("$[2].accountNumber").value("1000000003"))
+                .andExpect(jsonPath("$[2].balance").value(300L));
+    }
 }
